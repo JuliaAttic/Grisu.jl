@@ -9,12 +9,12 @@ const SHORTEST = 1
 const FIXED = 2
 const PRECISION = 3
 
-include("grisu/float.jl")
-include("grisu/fastshortest.jl")
-include("grisu/fastprecision.jl")
-include("grisu/fastfixed.jl")
-include("grisu/bignums.jl")
-include("grisu/bignum.jl")
+include("float.jl")
+include("fastshortest.jl")
+include("fastprecision.jl")
+include("fastfixed.jl")
+include("bignums.jl")
+include("bignum.jl")
 
 const DIGITS = Vector{UInt8}(undef, 309+17)
 const BIGNUMS = [Bignums.Bignum(),Bignums.Bignum(),Bignums.Bignum(),Bignums.Bignum()]
