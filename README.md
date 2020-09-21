@@ -11,7 +11,7 @@ loading it:
 
 ```julia
 if isdefined(Base, :Grisu)
-    const Grisu = Base.Grisu
+    import Base.Grisu
 else
     import Grisu
 end
