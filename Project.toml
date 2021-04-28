@@ -1,6 +1,6 @@
 name = "Grisu"
 uuid = "42e2da0e-8278-4e71-bc24-59509adca0fe"
-version = "1.0.0"
+version = "1.0.1"
 
 [compat]
 julia = "1"
