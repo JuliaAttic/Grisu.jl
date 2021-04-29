@@ -16,31 +16,15 @@ include("fastfixed.jl")
 include("bignums.jl")
 include("bignum.jl")
 
-DIGITS_f() = Vector{UInt8}(undef, 309+17)
-const DIGITS = DIGITS_f()
-BIGNUMS_f() = [Bignums.Bignum(),Bignums.Bignum(),Bignums.Bignum(),Bignums.Bignum()]
-const BIGNUMS = BIGNUMS_f()
+const DIGITS = Vector{UInt8}(undef, 309+17)
+const BIGNUMS = [Bignums.Bignum(),Bignums.Bignum(),Bignums.Bignum(),Bignums.Bignum()]
 
 # NOTE: DIGITS[s] is deprecated; you should use getbuf() instead.
-const DIGITSs = Vector{UInt8}[]
-const BIGNUMSs = Vector{Bignums.Bignum}[]
-
-function access_threaded(f, v::Vector)
-    tid = Threads.threadid()
-    0 < tid <= length(v) || _length_assert()
-    if @inbounds isassigned(v, tid)
-        @inbounds x = v[tid]
-    else
-        x = f()
-        @inbounds v[tid] = x
-    end
-    return x
-end
-@noinline _length_assert() =  @assert false "0 < tid <= v"
-
+const DIGITSs = [DIGITS]
+const BIGNUMSs = [BIGNUMS]
 function __init__()
-    resize!(empty!(DIGITSs),  Threads.nthreads())
-    resize!(empty!(BIGNUMSs), Threads.nthreads())
+    Threads.resize_nthreads!(DIGITSs)
+    Threads.resize_nthreads!(BIGNUMSs)
 end
 
 function getbuf()
@@ -74,7 +58,7 @@ The returned tuple contains:
    (for very large values).
  - `neg`: the signbit of `v` (see [`signbit`](@ref)).
 """
-function grisu(v::AbstractFloat,mode,requested_digits,buffer=access_threaded(DIGITS_f, DIGITSs),bignums=access_threaded(BIGNUMS_f, BIGNUMSs))
+function grisu(v::AbstractFloat,mode,requested_digits,buffer=DIGITSs[Threads.threadid()],bignums=BIGNUMSs[Threads.threadid()])
     if signbit(v)
         neg = true
         v = -v
